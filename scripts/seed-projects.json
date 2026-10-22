@@ -1,0 +1,272 @@
+[
+ {
+  "title": "Fluently",
+  "description": "An AI-powered language learning platform designed to help users improve their English speaking skills through real-time conversations, personalized feedback, and interactive practice.\r\n\r\nThe app works as a personal AI tutor that allows users to practice speaking naturally without traditional flashcards or complex exercises. It provides instant feedback on pronunciation, fluency, vocabulary, and grammar, helping users understand their weak areas and improve their communication skills.",
+  "year": "2026",
+  "link": "https://getfluently.app/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/69bb2560-cdd7-49d8-b88d-bbbe2bbd9373.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/94a3d02d-ffd5-43e0-a34f-6d93441d300f.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/71d616ae-13a4-4bd7-94f4-3257bab3d9ce.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/f1e09621-373a-4194-912b-a988a90d44a3.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/cb43d1a5-ca1d-4e13-bb25-56bb9ba1aa01.png"
+  ],
+  "tags": [
+   "AI Language Learning",
+   "EdTech",
+   "English Learning",
+   "AI Tutor",
+   "Speaking Practice",
+   "Language Learning App",
+   "AI Chatbot",
+   "Pronunciation Training"
+  ],
+  "id": "496cff03-0e59-478b-a4d0-ebb535cfc7a0",
+  "createdAt": "2026-08-10T11:59:49.400Z"
+ },
+ {
+  "title": "Brex",
+  "description": "Brex is a fintech platform for corporate cards, expense management, and business spending.\r\n\r\nAs a UI/UX Product Designer, I focused on creating a clear and efficient mobile experience for managing company finances. I worked on key user journeys including expense tracking, corporate card management, transaction history, spending analytics, and real-time transaction updates.\r\n\r\nThe focus was on simplifying complex financial information, creating intuitive navigation and interactions, and designing a consistent mobile interface that makes everyday financial tasks quick and easy to manage.",
+  "year": "2025",
+  "link": "https://www.brex.com/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/1e7e8d15-7d72-42b9-a3ec-7eaf224a8b86.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/34c35ad4-1e5a-44a5-b9b8-3f97b2acaece.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/bfe3bd63-eac6-41e0-92da-9d0c9e6a3293.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/2e1f2934-c927-4471-9f58-e05ebac334a1.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/4df8e007-4755-41a2-a729-e69a8d76c022.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "Mobile App Design",
+   "FinTech",
+   "Financial UX",
+   "Expense Management",
+   "Corporate Cards",
+   "Spend Management"
+  ],
+  "id": "8ead6f14-c394-493a-a3c9-ebe9d2a58da2",
+  "createdAt": "2026-09-21T14:34:15.758Z"
+ },
+ {
+  "title": "PayRails",
+  "description": "Designed a web-based payment management platform for configuring and monitoring payment flows across multiple PSPs and regions.\r\n\r\nI focused on creating a clear and scalable experience for complex financial workflows, including transaction monitoring, payment routing, retry logic, analytics, and rule configuration. I designed data-heavy interfaces with advanced tables, filters, dashboards, and rule builders while keeping the experience intuitive for users managing large volumes of transactions.\r\n\r\nThe main focus was on information hierarchy, usability, and making complex payment infrastructure easy to understand and operate through a consistent and structured interface.",
+  "year": "2025",
+  "link": "https://www.payrails.com/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/496b7be3-e3b4-42fe-ba1f-37add2a07760.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/eb59db39-f8e0-466d-851d-f8a8634dcc22.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/e2700613-f629-4981-9ed8-112fd10f4d23.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/e41b01ed-2dc1-4b8a-bef1-c1818084719b.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/acb42e45-7caa-487f-a1b1-420b6913c624.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "Web Design",
+   "SaaS Design",
+   "FinTech",
+   "Payment UX",
+   "Dashboard Design",
+   "Data Visualization"
+  ],
+  "id": "ad8dabc9-a9c3-4b14-9ae8-99ef1a472345",
+  "createdAt": "2026-09-21T14:27:26.347Z"
+ },
+ {
+  "title": "Vuelo",
+  "description": "Vuelo is a travel app built around the “Book Now, Pay Later” model, designed to make booking trips more flexible and accessible. I worked on the product design side, focusing on creating a clean, intuitive experience across the key user journeys.\r\n\r\nI designed and refined the booking flow, payment experience, authentication, and real-time booking updates, making sure each step was simple and easy to understand. I also worked with the complexity of travel and financing integrations, translating them into clear user flows and a consistent interface.\r\n\r\nThe main focus was on reducing friction throughout the booking process, improving usability, and creating a smooth experience from discovering a trip to completing a booking.",
+  "year": "2025",
+  "link": "https://apps.apple.com/gb/app/vuelo-book-now-pay-later/id6462404837",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/0e79d09d-067f-406d-931c-7aa5a853c01c.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/39accf2e-7c9c-440d-943c-f6c460a0e677.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/73fa859c-ef10-4ce6-aadc-1d9e963d0f0b.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/aea69ae0-8556-4b55-99e0-2da902cb77b5.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/28fe0837-9315-42e9-a659-9cd34b4afee3.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "UX Design",
+   "UI Design",
+   "Mobile App Design",
+   "Travel App",
+   "FinTech",
+   "Booking Flow",
+   "User Experience"
+  ],
+  "id": "4a745fe4-5799-4d3a-bfea-7f9c872ca5e4",
+  "createdAt": "2026-09-21T14:02:01.203Z"
+ },
+ {
+  "title": "StringFlow",
+  "description": "A music practice application designed for violinists, violists, and cellists who want a more visual and interactive way to practice sheet music.\r\n\r\nThe app allows musicians to import MusicXML, MXL, XML, and MIDI scores, select a specific instrument part, and practice with falling notes, string lanes, finger numbers, positions, ties, and slurs. Users can slow down playback, adjust note spacing, move through difficult passages, and keep track of current and upcoming notes.",
+  "year": "2025",
+  "link": "https://apps.apple.com/ua/app/stringflow/id6787140158?platform=ipad",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/4e4f4d05-deb6-4dd8-abc0-ba7bcfcc9a71.webp",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/831fa208-fc89-425c-94c8-19a166ac3927.webp",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/904571c8-130a-4997-bbf9-ae7b9659f08f.webp",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/be3f429b-82f5-4b08-a0ef-48163e4dec37.webp",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/c2dc3586-c5b0-4b20-8315-2b20faef211d.webp"
+  ],
+  "tags": [
+   "Music App",
+   "iOS App",
+   "iPad App",
+   "Music Education",
+   "EdTech",
+   "Music Practice"
+  ],
+  "id": "41363f35-f954-42c1-a5c3-8f90f2157e49",
+  "createdAt": "2026-08-10T12:02:24.944Z"
+ },
+ {
+  "title": "Linearity",
+  "description": "A professional creative software platform for graphic design, vector illustration, and motion design. Linearity combines vector design and animation tools in one workflow, helping designers create, edit, and animate visual content across Apple devices.\r\n\r\nLinearity Curve provides tools for creating logos, illustrations, branding materials, social media graphics, and other scalable vector designs. It includes vector editing, custom brushes, gradients, typography, image editing, background removal, and other tools for creating professional visual assets.",
+  "year": "2025",
+  "link": "https://www.linearity.io/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/7566a7c6-c574-43d5-9afb-0a1152ae493a.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/68ca63ee-e166-4998-a853-39ed653efff0.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/5a2323f1-3f03-40cf-b108-d28674808bdb.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/409617a7-3b44-4c5c-872e-e966427d39fb.png"
+  ],
+  "tags": [
+   "Graphic Design",
+   "Vector Design",
+   "Motion Design",
+   "Design Software",
+   "Illustration",
+   "Vector Illustration",
+   "Animation",
+   "Motion Graphics",
+   "UI Design"
+  ],
+  "id": "c44ea99b-1a42-4807-b95f-09d04f7720bb",
+  "createdAt": "2026-08-10T12:02:13.436Z"
+ },
+ {
+  "title": "Turo",
+  "description": "Designed a mobile map-based experience for car hosts to easily manage vehicle availability, bookings, and pickup locations.\r\n\r\nI focused on creating an intuitive map-first experience, combining interactive maps with date selection, availability zones, pickup areas, and booking information. The interface was designed to make complex location-based information easy to understand and manage on a mobile device.\r\n\r\nI worked on user flows, map and list interactions, gesture-based navigation, transitions, and responsive layouts. Special attention was given to reducing friction when switching between map and list views and making the experience clear and reliable even in situations with limited connectivity.",
+  "year": "2024",
+  "link": "https://apps.apple.com/ru/app/turo-better-car-rental/id555063314?l=uk",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/e0300a45-f6af-446c-a3d7-fcd7142ed60f.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/f50f8489-c0f4-43a9-b00e-1dc8ff12a7b5.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/0cdf0d5d-3e0f-4a9f-8fe0-24a2b3b2bbe1.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/28cec1cb-52d3-4854-8159-d05741c16561.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/73228ab8-fd8b-43fc-8230-f0f379d80141.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/e979bba0-1f60-491d-afc6-df11aad0cb71.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "Mobile App Design",
+   "UX Design",
+   "UI Design",
+   "Map UX",
+   "Location-Based Design",
+   "Travel Tech",
+   "Car Rental"
+  ],
+  "id": "dc4e2af8-2806-4662-b0e0-e2b2ca89dec4",
+  "createdAt": "2026-09-21T14:20:04.085Z"
+ },
+ {
+  "title": "Hive",
+  "description": "Hive is a project management and team collaboration platform designed to bring tasks, communication, workflows, and team productivity into one workspace.\r\n\r\nAs a UI/UX Product Designer, I focused on creating clear and scalable experiences for complex project management workflows. I worked on task management, team collaboration, workflow organization, and customizable project views such as Kanban, Gantt, and Calendar.\r\n\r\nI focused on information architecture, navigation, dashboards, interaction patterns, and responsive layouts, making large amounts of project and team data easy to understand and manage. I also worked on creating consistent UI patterns across integrations and productivity features while keeping the overall experience simple and intuitive.",
+  "year": "2022",
+  "link": "",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/0af9f0dc-9c6a-40d7-a0f5-b4e01075504d.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/32f1346e-a80f-4b1d-ba29-c6e8c57144c9.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/9cf2afa0-91cc-4e21-88f6-8b8923f3c916.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/ff301e94-ce23-4c26-bcf2-465e79768ce8.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/6108f8d5-e628-4046-8401-77368e7fa755.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "SaaS Design",
+   "Web App Design",
+   "Project Management",
+   "Collaboration Tools",
+   "B2B UX",
+   "Dashboard Design",
+   "Kanban"
+  ],
+  "id": "f28d911c-136d-48c1-a8f1-5ac5a0525c51",
+  "createdAt": "2026-09-21T14:30:09.270Z"
+ },
+ {
+  "title": "Adoratorio Studio",
+  "description": "Adoratorio Studio is a creative digital studio website focused on showcasing the studio’s work through a highly visual and immersive experience.\r\n\r\nAs a UI/UX Product Designer, I worked on creating a modern and engaging digital experience for the studio, with a strong focus on visual storytelling and presenting creative projects in a clear and memorable way.\r\n\r\nI designed the structure and user flows for portfolio and case-study pages, focusing on intuitive navigation, content hierarchy, responsive layouts, and smooth interactions. I also worked on interactive elements, animations, transitions, and the overall design system to keep the experience consistent across the website.\r\n\r\nThe main goal was to balance strong visual direction with usability, making it easy for visitors to explore projects while maintaining the creative identity of the studio across desktop and mobile.",
+  "year": "2022",
+  "link": "https://adoratorio.studio/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/cbb57203-f730-4754-9484-226559083e50.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/164bec76-c0b3-4f68-b020-1eb59e4abac9.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/ed25f2a2-7fca-468b-a1e2-69c4ccd69d4a.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/7a1fa94d-3055-4724-a908-6752ebadc349.png"
+  ],
+  "tags": [
+   "UI/UX Design",
+   "Product Design",
+   "Web Design",
+   "UX Design",
+   "UI Design",
+   "Creative Website"
+  ],
+  "id": "06d79e26-9b02-4c3b-86f0-875012b3afc4",
+  "createdAt": "2026-09-21T14:16:20.835Z"
+ },
+ {
+  "title": "TONALY",
+  "description": "A music-focused mobile application designed to help musicians, songwriters, producers, and music students write songs, explore chords, learn scales, and practice their instruments.\r\n\r\nThe app uses the Circle of Fifths to help users understand relationships between chords and keys. It provides intelligent chord suggestions, chord progressions, borrowed chords, chord extensions, and melody ideas for hooks, basslines, and solos.",
+  "year": "2022",
+  "link": "https://tonaly.app/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/d47e3b56-bf22-4b98-96dd-9d57abd86791.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/7b04d68b-ac26-4a87-96dd-54a98d57b9b5.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/4d8995b1-2954-45a8-8ebe-52edb5eb0eaa.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/231fa81e-8fe5-4459-8718-8c65f7f228e7.png"
+  ],
+  "tags": [
+   "Music App",
+   "iOS App",
+   "Music Theory",
+   "Songwriting",
+   "Chord Progressions"
+  ],
+  "id": "bab1d4a6-1072-4d5d-ab20-dc9ee0d18895",
+  "createdAt": "2026-08-10T12:02:36.337Z"
+ },
+ {
+  "title": "PicCollage",
+  "description": "A creative photo and video editing application that helps users turn their photos and videos into collages, greeting cards, invitations, social media posts, and visual stories.\r\n\r\nThe app provides an easy-to-use editor with customizable templates, layouts, backgrounds, stickers, fonts, filters, and other creative tools. Users can combine multiple photos and videos, adjust their layouts, add text and design elements, and create personalized content for different occasions.",
+  "year": "2020",
+  "link": "https://piccollage.com/",
+  "image": "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/d9302ace-8644-4ed5-99f2-408e28d4f092.png",
+  "gallery": [
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/979bef37-ae2e-4ae9-8dc5-d48382ee3849.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/ee7c4255-3771-409d-85d3-bc4c9c728521.png",
+   "https://svqfs2ahm0ezsuvo.public.blob.vercel-storage.com/portfolio/32550ede-64d7-4271-a07e-b88f0df1fb6d.png"
+  ],
+  "tags": [
+   "Photo Editing",
+   "Photo Collage",
+   "Video Collage",
+   "Graphic Design",
+   "Creative Design",
+   "Mobile App",
+   "iOS App",
+   "Android App",
+   "AI Photo Editor"
+  ],
+  "id": "0c53ea55-ab68-46c6-8a6b-c3e6ecc914c9",
+  "createdAt": "2026-08-10T12:02:09.626Z"
+ }
+]
