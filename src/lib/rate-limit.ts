@@ -7,8 +7,10 @@ import { rateLimits } from "@/db/schema";
 // Returns true while the caller is within `limit` hits per `windowMs`.
 export async function rateLimit(key: string, limit: number, windowMs: number) {
   const now = new Date();
-  const windowOpen = new Date(now.getTime() - windowMs);
-  const expired = sql`${rateLimits.windowStart} < ${windowOpen}`;
+  // Raw sql`` params skip Drizzle's column encoding, and postgres-js would send a Date as
+  // Date.toString() ("Thu Oct 22 … (Eastern European Summer Time)"), so pass ISO strings.
+  const nowIso = sql`${now.toISOString()}::timestamptz`;
+  const expired = sql`${rateLimits.windowStart} < ${new Date(now.getTime() - windowMs).toISOString()}::timestamptz`;
 
   const [row] = await db
     .insert(rateLimits)
@@ -17,7 +19,7 @@ export async function rateLimit(key: string, limit: number, windowMs: number) {
       target: rateLimits.key,
       set: {
         count: sql`case when ${expired} then 1 else ${rateLimits.count} + 1 end`,
-        windowStart: sql`case when ${expired} then ${now} else ${rateLimits.windowStart} end`,
+        windowStart: sql`case when ${expired} then ${nowIso} else ${rateLimits.windowStart} end`,
       },
     })
     .returning({ count: rateLimits.count });
