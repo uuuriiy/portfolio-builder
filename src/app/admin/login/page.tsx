@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { buttonClass } from "@/components/admin/ui";
+import { buttonClass } from "@/components/admin/styles";
 
 export const metadata: Metadata = { title: "Admin" };
 

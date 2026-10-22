@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { CoverFormat } from "@/db/schema";
 
 export type ProjectView = {
   title: string;
@@ -13,7 +14,20 @@ export type ProjectView = {
   tags: string[];
 };
 
-export function ProjectCard({ project, featured = false }: { project: ProjectView; featured?: boolean }) {
+const coverAspect: Record<CoverFormat, string> = {
+  "16:10": "aspect-[16/10]",
+  "4:3": "aspect-[4/3]",
+};
+
+export function ProjectCard({
+  project,
+  featured = false,
+  coverFormat = "4:3",
+}: {
+  project: ProjectView;
+  featured?: boolean;
+  coverFormat?: CoverFormat;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,7 +46,7 @@ export function ProjectCard({ project, featured = false }: { project: ProjectVie
       >
         <div
           className={`relative overflow-hidden rounded-2xl border border-line bg-card ${
-            featured ? "aspect-[16/9] sm:aspect-[21/10]" : "aspect-[16/10]"
+            featured ? "aspect-[16/9] sm:aspect-[21/10]" : coverAspect[coverFormat]
           }`}
         >
           {project.image ? (
@@ -62,14 +76,14 @@ export function ProjectCard({ project, featured = false }: { project: ProjectVie
 }
 
 function ProjectModal({ project, onClose }: { project: ProjectView; onClose: () => void }) {
-  const [index, setIndex] = useState(0);
   const photos = project.gallery.length ? project.gallery : project.image ? [project.image] : [];
+  const strip = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (photos.length > 1 && e.key === "ArrowLeft") setIndex((i) => (i - 1 + photos.length) % photos.length);
-      if (photos.length > 1 && e.key === "ArrowRight") setIndex((i) => (i + 1) % photos.length);
+      if (e.key === "ArrowLeft") scrollStrip(strip.current, -1);
+      if (e.key === "ArrowRight") scrollStrip(strip.current, 1);
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -77,12 +91,12 @@ function ProjectModal({ project, onClose }: { project: ProjectView; onClose: () 
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose, photos.length]);
+  }, [onClose]);
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true">
       <div className="modal-backdrop absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="modal-panel relative z-10 flex h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-line bg-card">
+      <div className="modal-panel relative z-10 flex h-[90vh] w-full max-w-4xl flex-col overflow-y-auto rounded-2xl sm:overflow-hidden border border-line bg-card">
         <header className="flex items-start justify-between gap-4 border-b border-line p-5 sm:p-6">
           <div className="min-w-0">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -115,39 +129,13 @@ function ProjectModal({ project, onClose }: { project: ProjectView; onClose: () 
             </button>
           </div>
         </header>
-        <div className="relative min-h-0 flex-1 bg-background/40">
+        {/* On phones the panel scrolls so long descriptions don't squeeze the photos;
+            on larger screens the photos take whatever height the header leaves. */}
+        <div className="relative h-[60vh] flex-none bg-background/40 sm:h-auto sm:min-h-0 sm:flex-1">
           {photos.length > 0 ? (
-            <img
-              key={photos[index]}
-              src={photos[index]}
-              alt={`${project.title} ${index + 1}`}
-              className="carousel-image h-full w-full object-contain p-4 sm:p-6"
-            />
+            <Gallery photos={photos} title={project.title} stripRef={strip} />
           ) : (
             <p className="flex h-full items-center justify-center text-sm text-muted">Photos are coming soon</p>
-          )}
-          {photos.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() => setIndex((i) => (i - 1 + photos.length) % photos.length)}
-                aria-label="Previous photo"
-                className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-background/80 text-xl backdrop-blur transition hover:border-white/40"
-              >
-                ‹
-              </button>
-              <button
-                type="button"
-                onClick={() => setIndex((i) => (i + 1) % photos.length)}
-                aria-label="Next photo"
-                className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-background/80 text-xl backdrop-blur transition hover:border-white/40"
-              >
-                ›
-              </button>
-              <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-line bg-background/80 px-3 py-1 text-xs text-muted backdrop-blur">
-                {index + 1} / {photos.length}
-              </span>
-            </>
           )}
         </div>
         {project.link && (
@@ -163,5 +151,85 @@ function ProjectModal({ project, onClose }: { project: ProjectView; onClose: () 
       </div>
     </div>,
     document.body,
+  );
+}
+
+// Scroll the strip by most of its width; snapping then lands on the next photo.
+function scrollStrip(el: HTMLDivElement | null, direction: 1 | -1) {
+  el?.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: "smooth" });
+}
+
+// One horizontal strip for every gallery. Each photo is as tall as the strip allows, so phone
+// screenshots sit side by side (like an app store listing) while wide shots fill the width one at a time.
+function Gallery({
+  photos,
+  title,
+  stripRef,
+}: {
+  photos: string[];
+  title: string;
+  stripRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const [edges, setEdges] = useState({ atStart: true, atEnd: true });
+
+  const update = useCallback(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    setEdges({
+      atStart: el.scrollLeft <= 4,
+      atEnd: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+    });
+  }, [stripRef]);
+
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [stripRef, update]);
+
+  const arrow =
+    "absolute top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-background/80 text-xl backdrop-blur transition hover:border-white/40 sm:flex";
+
+  return (
+    <>
+      <div
+        ref={stripRef}
+        onScroll={update}
+        className="flex h-full snap-x snap-mandatory scroll-px-4 items-center gap-4 overflow-x-auto overscroll-x-contain p-4 [justify-content:safe_center] sm:scroll-px-6 sm:p-6"
+      >
+        {photos.map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt={`${title} ${i + 1}`}
+            onLoad={update}
+            className="h-auto max-h-full w-auto max-w-full flex-none snap-start rounded-xl"
+          />
+        ))}
+      </div>
+      {!edges.atStart && (
+        <button
+          type="button"
+          onClick={() => scrollStrip(stripRef.current, -1)}
+          aria-label="Previous photos"
+          className={`${arrow} left-3`}
+        >
+          ‹
+        </button>
+      )}
+      {!edges.atEnd && (
+        <button
+          type="button"
+          onClick={() => scrollStrip(stripRef.current, 1)}
+          aria-label="Next photos"
+          className={`${arrow} right-3`}
+        >
+          ›
+        </button>
+      )}
+    </>
   );
 }

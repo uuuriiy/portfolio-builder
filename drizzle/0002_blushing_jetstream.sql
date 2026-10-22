@@ -1,0 +1,1 @@
+ALTER TABLE "developers" ADD COLUMN "cover_format" text DEFAULT '16:10' NOT NULL;

@@ -10,6 +10,8 @@ import {
 } from "drizzle-orm/pg-core";
 
 export type Fact = { label: string; value: string };
+// Shape of project cover images in a portfolio's grid. Featured cards stay wide either way.
+export type CoverFormat = "16:10" | "4:3";
 export type ContactLink = { label: string; url: string };
 
 export const developers = pgTable("developers", {
@@ -39,6 +41,8 @@ export const developers = pgTable("developers", {
   contactSubtitle: text("contact_subtitle").notNull().default(""),
   contactCta: text("contact_cta").notNull().default("Contact with me"),
   contactLinks: jsonb("contact_links").$type<ContactLink[]>().notNull().default([]),
+
+  coverFormat: text("cover_format").$type<CoverFormat>().notNull().default("4:3"),
 
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

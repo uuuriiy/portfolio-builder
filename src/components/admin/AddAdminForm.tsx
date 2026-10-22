@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { addAdmin } from "@/app/admin/actions";
-import { FormMessage, inputClass, SubmitButton, useFormSubmit } from "./ui";
+import { FormMessage, SubmitButton, useFormSubmit } from "./ui";
+import { inputClass } from "./styles";
 
 export function AddAdminForm() {
   const [state, formAction, pending] = useActionState(addAdmin, undefined);

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { logout } from "@/app/admin/actions";
-import { secondaryButtonClass } from "@/components/admin/ui";
+import { secondaryButtonClass } from "@/components/admin/styles";
 import { getCurrentAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Admin" };

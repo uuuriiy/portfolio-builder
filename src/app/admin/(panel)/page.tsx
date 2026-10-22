@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { regenerateLink, setPublished } from "@/app/admin/actions";
 import { CopyLinkButton } from "@/components/admin/CopyLinkButton";
-import { buttonClass, ConfirmButton, PendingButton, secondaryButtonClass } from "@/components/admin/ui";
+import { ConfirmButton, PendingButton } from "@/components/admin/ui";
+import { buttonClass, secondaryButtonClass } from "@/components/admin/styles";
 import { listDevelopers } from "@/lib/data";
 
 export const instant = false;
@@ -32,9 +33,9 @@ export default async function AdminHome() {
             return (
               <li
                 key={dev.id}
-                className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5 md:flex-row md:items-center"
               >
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3">
                     <Link href={`/admin/developers/${dev.id}`} className="truncate font-medium hover:underline">
                       {dev.name}
@@ -56,16 +57,20 @@ export default async function AdminHome() {
                     </a>
                   )}
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  {dev.isPublished && <CopyLinkButton path={path} />}
+                {/* Same buttons in the same order on every row, so they line up down the list. */}
+                <div className="flex shrink-0 flex-wrap items-center gap-2 md:flex-nowrap">
+                  <CopyLinkButton path={path} disabled={!dev.isPublished} />
                   <form action={setPublished.bind(null, dev.id, !dev.isPublished)}>
-                    <PendingButton className={secondaryButtonClass}>
+                    <PendingButton className={`${secondaryButtonClass} min-w-[5.5rem]`}>
                       {dev.isPublished ? "Hide" : "Publish"}
                     </PendingButton>
                   </form>
                   <ConfirmButton
                     action={regenerateLink.bind(null, dev.id)}
-                    message={`Create a new link for ${dev.name}? The current link will stop working immediately.`}
+                    title={`Create a new link for ${dev.name}?`}
+                    message="Anyone with the current link will lose access immediately. You'll need to send the new link again."
+                    confirmLabel="Create new link"
+                    danger={false}
                     className={secondaryButtonClass}
                   >
                     New link

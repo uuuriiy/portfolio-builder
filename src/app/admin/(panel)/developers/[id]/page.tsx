@@ -10,7 +10,8 @@ import {
 } from "@/app/admin/actions";
 import { CopyLinkButton } from "@/components/admin/CopyLinkButton";
 import { DeveloperForm } from "@/components/admin/DeveloperForm";
-import { buttonClass, ConfirmButton, PendingButton, secondaryButtonClass } from "@/components/admin/ui";
+import { ConfirmButton, PendingButton } from "@/components/admin/ui";
+import { buttonClass, secondaryButtonClass } from "@/components/admin/styles";
 import { getDeveloper, getDeveloperProjects } from "@/lib/data";
 
 export const instant = false;
@@ -49,7 +50,10 @@ export default async function DeveloperPage({ params }: PageProps<"/admin/develo
           </form>
           <ConfirmButton
             action={regenerateLink.bind(null, developer.id)}
-            message="Create a new link? Anyone with the current link will lose access immediately."
+            title="Create a new link?"
+            message="Anyone with the current link will lose access immediately. You'll need to send the new link again."
+            confirmLabel="Create new link"
+            danger={false}
             className={secondaryButtonClass}
           >
             Generate new link
@@ -99,7 +103,9 @@ export default async function DeveloperPage({ params }: PageProps<"/admin/develo
                   </Link>
                   <ConfirmButton
                     action={deleteProject.bind(null, developer.id, project.id)}
-                    message={`Delete “${project.title}”?`}
+                    title="Delete project?"
+                    message={`“${project.title}” and its images will be removed from the portfolio. This can't be undone.`}
+                    confirmLabel="Delete project"
                   >
                     Delete
                   </ConfirmButton>
@@ -125,7 +131,9 @@ export default async function DeveloperPage({ params }: PageProps<"/admin/develo
         <div className="mt-4">
           <ConfirmButton
             action={deleteDeveloper.bind(null, developer.id)}
-            message={`Delete ${developer.name} and all their projects? This cannot be undone.`}
+            title={`Delete ${developer.name}?`}
+            message="The portfolio page, all of its projects and their images will be removed, and its link will stop working. This can't be undone."
+            confirmLabel="Delete developer"
           >
             Delete developer
           </ConfirmButton>

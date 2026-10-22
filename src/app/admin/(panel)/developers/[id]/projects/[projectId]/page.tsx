@@ -24,6 +24,7 @@ export default async function EditProjectPage({
         values={project}
         submitLabel="Save project"
         uploadsEnabled={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+        coverFormat={developer.coverFormat}
       />
     </>
   );

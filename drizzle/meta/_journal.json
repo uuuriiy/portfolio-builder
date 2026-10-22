@@ -15,6 +15,20 @@
       "when": 1792632772387,
       "tag": "0001_motionless_vapor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792672554690,
+      "tag": "0002_blushing_jetstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792673437303,
+      "tag": "0003_amused_whiplash",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { removeAdmin, revokeSession, signOutOtherSessions } from "@/app/admin/actions";
 import { AddAdminForm } from "@/components/admin/AddAdminForm";
-import { ConfirmButton, secondaryButtonClass } from "@/components/admin/ui";
+import { ConfirmButton } from "@/components/admin/ui";
+import { secondaryButtonClass } from "@/components/admin/styles";
 import { requireAdmin } from "@/lib/auth";
 import { listAdmins, listSessions } from "@/lib/data";
 
@@ -40,11 +41,13 @@ export default async function SecurityPage() {
                 {adminList.length > 1 && (
                   <ConfirmButton
                     action={removeAdmin.bind(null, admin.id)}
+                    title={isMe ? "Remove your own access?" : `Remove ${admin.email}?`}
                     message={
                       isMe
-                        ? "Remove your own access? You will be signed out and can't sign in again unless another admin adds you back."
-                        : `Remove ${admin.email}? They will be signed out everywhere immediately.`
+                        ? "You will be signed out and can't sign in again unless another admin adds you back."
+                        : "They will be signed out everywhere immediately and can no longer sign in."
                     }
+                    confirmLabel={isMe ? "Remove me" : "Remove admin"}
                   >
                     {isMe ? "Remove me" : "Remove"}
                   </ConfirmButton>
@@ -69,7 +72,10 @@ export default async function SecurityPage() {
           {others.length > 0 && (
             <ConfirmButton
               action={signOutOtherSessions}
-              message="Sign out every other browser, for all admins?"
+              title="Sign out all other sessions?"
+              message="Every other browser will be signed out, for all admins. This browser stays signed in."
+              confirmLabel="Sign out others"
+              danger={false}
             >
               Sign out all other sessions
             </ConfirmButton>
@@ -91,7 +97,14 @@ export default async function SecurityPage() {
                 </div>
                 <ConfirmButton
                   action={revokeSession.bind(null, s.id)}
-                  message={isCurrent ? "Sign out of this browser?" : "Sign out this session?"}
+                  title={isCurrent ? "Sign out of this browser?" : "Sign out this session?"}
+                  message={
+                    isCurrent
+                      ? "You'll need to sign in with Google again."
+                      : "That browser will need to sign in with Google again."
+                  }
+                  confirmLabel="Sign out"
+                  danger={false}
                   className={secondaryButtonClass}
                 >
                   Sign out

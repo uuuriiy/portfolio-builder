@@ -2,8 +2,10 @@
 
 import { useActionState } from "react";
 import type { DeveloperValues } from "@/lib/defaults";
-import { formatFacts, formatLinks, type FormState } from "@/lib/forms";
-import { Field, FormMessage, inputClass, SubmitButton, useFormSubmit } from "./ui";
+import { formatFacts, type FormState } from "@/lib/forms";
+import { ContactLinksField } from "./ContactLinksField";
+import { Field, FormMessage, SubmitButton, useFormSubmit } from "./ui";
+import { inputClass } from "./styles";
 
 export function DeveloperForm({
   action,
@@ -33,6 +35,18 @@ export function DeveloperForm({
         </div>
         <Field label="Email" hint="Used by the “Get in touch” and contact buttons.">
           <input name="email" type="email" defaultValue={values.email} className={inputClass} />
+        </Field>
+      </Section>
+
+      <Section title="Projects">
+        <Field
+          label="Cover format"
+          hint="Shape of project covers in the grid. Pick the one your cover images were made in; featured projects stay wide."
+        >
+          <select name="coverFormat" defaultValue={values.coverFormat} className={inputClass}>
+            <option value="4:3">4:3 — classic</option>
+            <option value="16:10">16:10 — wide</option>
+          </select>
         </Field>
       </Section>
 
@@ -88,14 +102,7 @@ export function DeveloperForm({
         <Field label="Button text">
           <input name="contactCta" defaultValue={values.contactCta} className={inputClass} />
         </Field>
-        <Field label="Extra links" hint="Optional, one per line as “Label | https://…”, e.g. “LinkedIn | https://linkedin.com/in/…”.">
-          <textarea
-            name="contactLinks"
-            rows={3}
-            defaultValue={formatLinks(values.contactLinks)}
-            className={`${inputClass} font-mono`}
-          />
-        </Field>
+        <ContactLinksField initial={values.contactLinks} />
       </Section>
 
       <div className="flex items-center gap-4">

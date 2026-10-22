@@ -1,19 +1,9 @@
 "use client";
 
-import { useTransition, type FormEvent, type ReactNode } from "react";
+import { useRef, useTransition, type FormEvent, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
+import { buttonClass, dangerButtonClass, secondaryButtonClass } from "./styles";
 
-export const inputClass =
-  "mt-1.5 w-full rounded-lg border border-line bg-background px-3 py-2.5 text-sm outline-none transition focus:border-white/40";
-
-export const buttonClass =
-  "rounded-full bg-foreground px-5 py-2 text-sm font-medium text-black transition hover:bg-white/80 disabled:opacity-50";
-
-export const secondaryButtonClass =
-  "rounded-full border border-line px-4 py-1.5 text-sm transition hover:border-white/40 disabled:opacity-50";
-
-export const dangerButtonClass =
-  "rounded-full border border-red-500/30 px-4 py-1.5 text-sm text-red-400 transition hover:bg-red-500/10 disabled:opacity-50";
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
@@ -41,27 +31,75 @@ export function SubmitButton({
   );
 }
 
-// A small form that asks for confirmation before running a destructive action.
+// A button that asks for confirmation in a modal before running an action
+// (deleting, issuing a new link, signing out a session…).
 export function ConfirmButton({
   action,
   message,
+  title = "Are you sure?",
+  confirmLabel,
+  danger = true,
   children,
   className = dangerButtonClass,
 }: {
   action: () => Promise<void>;
   message: string;
+  title?: string;
+  confirmLabel?: string;
+  danger?: boolean;
   children: ReactNode;
   className?: string;
 }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [pending, startTransition] = useTransition();
+
+  const confirm = () =>
+    startTransition(async () => {
+      await action();
+      dialog.current?.close();
+    });
+
   return (
-    <form
-      action={action}
-      onSubmit={(e) => {
-        if (!confirm(message)) e.preventDefault();
-      }}
-    >
-      <PendingButton className={className}>{children}</PendingButton>
-    </form>
+    <>
+      <button type="button" className={className} onClick={() => dialog.current?.showModal()}>
+        {children}
+      </button>
+      <dialog
+        ref={dialog}
+        onCancel={(e) => pending && e.preventDefault()}
+        // Clicks on the backdrop land on the <dialog> itself; clicks on the card land on its children.
+        onClick={(e) => e.target === e.currentTarget && !pending && dialog.current?.close()}
+        className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-line bg-card p-0 text-foreground backdrop:bg-black/70 backdrop:backdrop-blur-sm"
+      >
+        <div className="p-6">
+          <h2 className="text-lg font-medium">{title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{message}</p>
+          <div className="mt-6 flex justify-end gap-2">
+            <button
+              type="button"
+              autoFocus
+              disabled={pending}
+              onClick={() => dialog.current?.close()}
+              className={secondaryButtonClass}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={confirm}
+              className={
+                danger
+                  ? "rounded-full bg-red-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-red-400 disabled:opacity-50"
+                  : `${buttonClass} py-1.5`
+              }
+            >
+              {pending ? "Working…" : (confirmLabel ?? children)}
+            </button>
+          </div>
+        </div>
+      </dialog>
+    </>
   );
 }
 

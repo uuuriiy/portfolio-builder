@@ -78,10 +78,6 @@ body {
   animation: modal-in 0.25s;
 }
 
-.carousel-image {
-  animation: fade-in 0.25s;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
   .reveal {

@@ -31,6 +31,7 @@ export const emptyDeveloper: DeveloperValues = {
   contactSubtitle: "Tell me about it and I will get back to you within a day",
   contactCta: "Contact with me",
   contactLinks: [],
+  coverFormat: "4:3",
 };
 
 export const emptyProject: ProjectValues = {

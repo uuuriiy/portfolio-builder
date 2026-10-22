@@ -23,6 +23,7 @@ export default async function NewProjectPage({ params }: PageProps<"/admin/devel
         values={emptyProject}
         submitLabel="Create project"
         uploadsEnabled={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+        coverFormat={developer.coverFormat}
       />
     </>
   );

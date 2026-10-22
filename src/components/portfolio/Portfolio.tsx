@@ -116,7 +116,7 @@ export function Portfolio({ portfolio }: { portfolio: PublicPortfolio }) {
                     delay={(i % 2) * 0.1}
                     className={project.featured ? "sm:col-span-2" : ""}
                   >
-                    <ProjectCard project={view} featured={project.featured} />
+                    <ProjectCard project={view} featured={project.featured} coverFormat={profile.coverFormat} />
                   </Reveal>
                 );
               })}

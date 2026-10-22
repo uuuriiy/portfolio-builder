@@ -2,9 +2,11 @@
 
 import { useActionState, useState } from "react";
 import { upload } from "@vercel/blob/client";
+import type { CoverFormat } from "@/db/schema";
 import type { ProjectValues } from "@/lib/defaults";
 import type { FormState } from "@/lib/forms";
-import { Field, FormMessage, inputClass, secondaryButtonClass, SubmitButton, useFormSubmit } from "./ui";
+import { Field, FormMessage, SubmitButton, useFormSubmit } from "./ui";
+import { inputClass, secondaryButtonClass } from "./styles";
 
 async function uploadImage(file: File) {
   const ext = file.name.split(".").pop()?.toLowerCase() || "png";
@@ -20,11 +22,13 @@ export function ProjectForm({
   values,
   submitLabel,
   uploadsEnabled,
+  coverFormat,
 }: {
   action: (state: FormState, form: FormData) => Promise<FormState>;
   values: ProjectValues;
   submitLabel: string;
   uploadsEnabled: boolean;
+  coverFormat: CoverFormat;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
   const onSubmit = useFormSubmit(formAction);
@@ -81,11 +85,17 @@ export function ProjectForm({
       </label>
 
       <div className="space-y-3">
-        <p className="text-sm text-foreground/80">Cover image</p>
+        <p className="text-sm text-foreground/80">
+          Cover image <span className="text-muted">(shown cropped to {coverFormat}, as in the grid)</span>
+        </p>
         <input type="hidden" name="image" value={image} />
         {image && (
           <div className="relative w-64 overflow-hidden rounded-xl border border-line">
-            <img src={image} alt="" className="aspect-[16/10] w-full object-cover" />
+            <img
+              src={image}
+              alt=""
+              className={`${coverFormat === "4:3" ? "aspect-[4/3]" : "aspect-[16/10]"} w-full object-cover`}
+            />
           </div>
         )}
         <div className="flex gap-3">

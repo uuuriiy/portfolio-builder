@@ -38,16 +38,41 @@ export const parseFacts = (value: string): Fact[] =>
     return [{ label: line.slice(0, i).trim(), value: line.slice(i + 1).trim() }];
   });
 
-// "Label | https://url" per line
-export const parseLinks = (value: string): ContactLink[] =>
-  splitLines(value).flatMap((line) => {
-    const [label, link] = line.split("|").map((s) => s.trim());
-    if (!label || !link || !/^(https?:|mailto:)/.test(link)) return [];
-    return [{ label, url: link }];
+// Rows from ContactLinksField. Fully empty rows are dropped; anything else is kept so the
+// schema can report it instead of silently losing it. Common shorthands are normalised:
+// "linkedin.com/in/x" → https://…, "me@mail.com" → mailto:….
+export const parseLinks = (labels: string[], urls: string[]): ContactLink[] =>
+  labels.flatMap((rawLabel, i) => {
+    const label = rawLabel.trim();
+    let url = (urls[i] ?? "").trim();
+    if (!label && !url) return [];
+    const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(url);
+    if (url && !hasScheme) url = /^[^\s@/]+@[^\s@/]+\.[^\s@/]+$/.test(url) ? `mailto:${url}` : `https://${url}`;
+    return [{ label, url }];
+  });
+
+const isLink = (url: string) => {
+  try {
+    const { protocol, hostname, pathname } = new URL(url);
+    if (protocol === "mailto:") return pathname.includes("@");
+    return (protocol === "https:" || protocol === "http:") && hostname.includes(".");
+  } catch {
+    return false;
+  }
+};
+
+const contactLink = z
+  .object({ label: z.string().max(60), url: z.string().max(2000) })
+  .superRefine((link, ctx) => {
+    if (!link.label) ctx.addIssue({ code: "custom", message: `Add a label for the link ${link.url}` });
+    else if (!link.url) ctx.addIssue({ code: "custom", message: `Add a URL for the “${link.label}” link` });
+    else if (!isLink(link.url)) ctx.addIssue({ code: "custom", message: `“${link.url}” isn't a valid link` });
   });
 
 export const formatFacts = (facts: Fact[]) => facts.map((f) => `${f.label}: ${f.value}`).join("\n");
-export const formatLinks = (links: ContactLink[]) => links.map((l) => `${l.label} | ${l.url}`).join("\n");
+
+const strings = (form: FormData, name: string) =>
+  form.getAll(name).map((v) => (typeof v === "string" ? v : ""));
 
 const field = (form: FormData, name: string) => {
   const v = form.get(name);
@@ -71,7 +96,8 @@ export const developerSchema = z.object({
   contactTitleAccent: text(),
   contactSubtitle: text(600),
   contactCta: text(60),
-  contactLinks: z.array(z.object({ label: z.string().max(60), url: z.string().max(2000) })).max(10),
+  contactLinks: z.array(contactLink).max(10, "Up to 10 extra links"),
+  coverFormat: z.enum(["16:10", "4:3"]).catch("4:3"),
 });
 
 export function parseDeveloperForm(form: FormData) {
@@ -92,7 +118,8 @@ export function parseDeveloperForm(form: FormData) {
     contactTitleAccent: field(form, "contactTitleAccent"),
     contactSubtitle: field(form, "contactSubtitle"),
     contactCta: field(form, "contactCta"),
-    contactLinks: parseLinks(field(form, "contactLinks")),
+    contactLinks: parseLinks(strings(form, "linkLabel"), strings(form, "linkUrl")),
+    coverFormat: field(form, "coverFormat"),
   });
 }
 
