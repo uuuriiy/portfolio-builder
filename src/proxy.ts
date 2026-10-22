@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isLiveToken } from "@/lib/live-token";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { SESSION_COOKIE } from "@/lib/session";
+import { lookupSession } from "@/lib/session-store";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -13,11 +14,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admin: redirect anonymous visitors to the login page. Pages and Server Actions
-  // re-check the session themselves (requireAdmin); this is only the first gate.
+  // Admin: send visitors without a live session to the login page with a real redirect, before
+  // anything renders. Pages, Server Actions and Route Handlers still check again (requireAdmin).
   if (pathname === "/admin/login") return NextResponse.next();
-  const ok = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
-  if (!ok) return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (!(await lookupSession(request.cookies.get(SESSION_COOKIE)?.value))) {
+    const response = NextResponse.redirect(new URL("/admin/login", request.url));
+    if (request.cookies.has(SESSION_COOKIE)) response.cookies.delete(SESSION_COOKIE);
+    return response;
+  }
   return NextResponse.next();
 }
 

@@ -61,5 +61,40 @@ export const projects = pgTable("projects", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("projects_developer_id_idx").on(t.developerId)]);
 
+// Google accounts allowed into /admin. Nothing secret is stored: Google proves the email.
+export const admins = pgTable("admins", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(), // always lowercase
+  name: text("name").notNull().default(""),
+  lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// One row per signed-in browser. The cookie holds a random token; only its SHA-256 is stored,
+// so a database leak can't be replayed as a login. Deleting a row signs that browser out.
+export const adminSessions = pgTable(
+  "admin_sessions",
+  {
+    id: text("id").primaryKey(), // sha256(token), hex
+    adminId: uuid("admin_id")
+      .notNull()
+      .references(() => admins.id, { onDelete: "cascade" }),
+    userAgent: text("user_agent").notNull().default(""),
+    ip: text("ip").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("admin_sessions_admin_id_idx").on(t.adminId)],
+);
+
+// Fixed-window counters for sign-in attempts, keyed by e.g. "login:<ip>".
+export const rateLimits = pgTable("rate_limits", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull().default(0),
+  windowStart: timestamp("window_start", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type Developer = typeof developers.$inferSelect;
 export type Project = typeof projects.$inferSelect;
+export type Admin = typeof admins.$inferSelect;

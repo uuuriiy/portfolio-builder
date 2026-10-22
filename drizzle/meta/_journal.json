@@ -8,6 +8,13 @@
       "when": 1792628621060,
       "tag": "0000_secret_penance",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792632772387,
+      "tag": "0001_motionless_vapor",
+      "breakpoints": true
     }
   ]
 }

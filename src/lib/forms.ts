@@ -120,6 +120,12 @@ export function parseProjectForm(form: FormData) {
   });
 }
 
+export const adminEmailSchema = z
+  .string("Enter an email")
+  .trim()
+  .toLowerCase()
+  .pipe(z.email("Enter a valid email"));
+
 export type FormState = { error?: string; saved?: boolean } | undefined;
 
 export const firstError = (error: z.ZodError) => error.issues[0]?.message ?? "Invalid input";

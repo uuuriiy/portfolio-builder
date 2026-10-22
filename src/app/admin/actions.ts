@@ -1,29 +1,72 @@
 "use server";
 
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { del } from "@vercel/blob";
 import { db } from "@/db";
-import { developers, projects } from "@/db/schema";
-import { checkPassword, endSession, requireAdmin, startSession } from "@/lib/auth";
-import { firstError, isUuid, parseDeveloperForm, parseProjectForm, type FormState } from "@/lib/forms";
+import { admins, adminSessions, developers, projects } from "@/db/schema";
+import { endSession, requireAdmin } from "@/lib/auth";
+import { adminEmailSchema, firstError, isUuid, parseDeveloperForm, parseProjectForm, type FormState } from "@/lib/forms";
 import { generateAccessToken } from "@/lib/tokens";
 
 // Every action below re-checks the session: Server Actions are public endpoints.
 
-export async function login(_prev: FormState, form: FormData): Promise<FormState> {
-  const password = form.get("password");
-  if (typeof password !== "string" || !checkPassword(password)) {
-    return { error: "Wrong password" };
-  }
-  await startSession();
-  redirect("/admin");
-}
-
 export async function logout() {
   await endSession();
   redirect("/admin/login");
+}
+
+// Admins and sessions
+
+export async function addAdmin(_prev: FormState, form: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = adminEmailSchema.safeParse(form.get("email"));
+  if (!parsed.success) return { error: firstError(parsed.error) };
+
+  const inserted = await db
+    .insert(admins)
+    .values({ email: parsed.data })
+    .onConflictDoNothing()
+    .returning({ id: admins.id });
+  if (!inserted.length) return { error: "That email already has access" };
+  refresh();
+  return { saved: true };
+}
+
+// Removing an admin also ends all of their sessions (cascade). Removing yourself is how you
+// hand the panel over: it works only while another admin remains, and signs you out.
+export async function removeAdmin(id: string) {
+  const me = await requireAdmin();
+  if (!isUuid(id)) return;
+
+  const [{ total }] = await db.select({ total: sql<number>`count(*)` }).from(admins);
+  if (Number(total) <= 1) return;
+
+  await db.delete(admins).where(eq(admins.id, id));
+  if (id === me.id) {
+    await endSession();
+    redirect("/admin/login");
+  }
+  refresh();
+}
+
+export async function revokeSession(sessionId: string) {
+  const me = await requireAdmin();
+  if (!/^[0-9a-f]{64}$/.test(sessionId)) return;
+  if (sessionId === me.sessionId) {
+    await endSession();
+    redirect("/admin/login");
+  }
+  await db.delete(adminSessions).where(eq(adminSessions.id, sessionId));
+  refresh();
+}
+
+// Signs out every other browser, for every admin. Use it if a device is lost or shared.
+export async function signOutOtherSessions() {
+  const me = await requireAdmin();
+  await db.delete(adminSessions).where(ne(adminSessions.id, me.sessionId));
+  refresh();
 }
 
 export async function createDeveloper(_prev: FormState, form: FormData): Promise<FormState> {

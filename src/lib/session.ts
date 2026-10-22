@@ -1,31 +1,9 @@
-import { jwtVerify, SignJWT } from "jose";
-
 // Shared by proxy.ts and server code, so it must not import server-only modules.
 export const SESSION_COOKIE = "admin_session";
-export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
-function secretKey() {
-  const secret = process.env.SESSION_SECRET;
-  if (!secret || secret.length < 32) {
-    throw new Error("SESSION_SECRET must be set to at least 32 characters");
-  }
-  return new TextEncoder().encode(secret);
-}
+// A session ends after 12 hours without activity, and after 7 days no matter what.
+export const SESSION_IDLE_MS = 12 * 60 * 60 * 1000;
+export const SESSION_MAX_MS = 7 * 24 * 60 * 60 * 1000;
 
-export async function signSession() {
-  return new SignJWT({ role: "admin" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(`${SESSION_MAX_AGE}s`)
-    .sign(secretKey());
-}
-
-export async function verifySessionToken(token: string | undefined) {
-  if (!token) return false;
-  try {
-    const { payload } = await jwtVerify(token, secretKey(), { algorithms: ["HS256"] });
-    return payload.role === "admin";
-  } catch {
-    return false;
-  }
-}
+// Raw tokens are 32 random bytes, base64url (43 chars). Cheap shape check before any DB lookup.
+export const SESSION_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;

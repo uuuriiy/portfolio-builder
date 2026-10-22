@@ -1,10 +1,11 @@
 import "server-only";
 import { cache } from "react";
-import { and, asc, count, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt } from "drizzle-orm";
 import { db } from "@/db";
-import { developers, projects } from "@/db/schema";
+import { admins, adminSessions, developers, projects } from "@/db/schema";
 import { ACCESS_TOKEN_PATTERN } from "./tokens";
 import { requireAdmin } from "./auth";
+import { SESSION_IDLE_MS } from "./session";
 import { isUuid } from "./forms";
 
 const projectOrder = [asc(projects.sortOrder), desc(projects.createdAt)];
@@ -81,4 +82,34 @@ export async function getProject(developerId: string, projectId: string) {
     .where(and(eq(projects.id, projectId), eq(projects.developerId, developerId)))
     .limit(1);
   return project ?? null;
+}
+
+export async function listAdmins() {
+  await requireAdmin();
+  return db.select().from(admins).orderBy(asc(admins.createdAt));
+}
+
+// Active sessions only (not past their 7-day expiry or 12-hour idle limit).
+// Expired rows are removed when they are next used.
+export async function listSessions() {
+  await requireAdmin();
+  const now = Date.now();
+  return db
+    .select({
+      id: adminSessions.id,
+      email: admins.email,
+      userAgent: adminSessions.userAgent,
+      ip: adminSessions.ip,
+      createdAt: adminSessions.createdAt,
+      lastSeenAt: adminSessions.lastSeenAt,
+    })
+    .from(adminSessions)
+    .innerJoin(admins, eq(admins.id, adminSessions.adminId))
+    .where(
+      and(
+        gt(adminSessions.expiresAt, new Date(now)),
+        gt(adminSessions.lastSeenAt, new Date(now - SESSION_IDLE_MS)),
+      ),
+    )
+    .orderBy(desc(adminSessions.lastSeenAt));
 }

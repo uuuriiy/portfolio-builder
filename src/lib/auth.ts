@@ -1,38 +1,65 @@
 import "server-only";
-import { timingSafeEqual, createHash } from "node:crypto";
-import { cookies } from "next/headers";
+import { randomBytes } from "node:crypto";
+import { cache } from "react";
+import { eq } from "drizzle-orm";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE, SESSION_MAX_AGE, signSession, verifySessionToken } from "./session";
+import { connection } from "next/server";
+import { db } from "@/db";
+import { adminSessions } from "@/db/schema";
+import { SESSION_COOKIE, SESSION_MAX_MS, SESSION_TOKEN_PATTERN } from "./session";
+import { hashSessionToken, lookupSession, type SessionAdmin } from "./session-store";
+
+export type CurrentAdmin = SessionAdmin;
+
+// Looks the session cookie up in the database. Memoised per request.
+// connection() keeps this (and its expiry clock check) out of prerendered/prefetched output.
+export const getCurrentAdmin = cache(async (): Promise<CurrentAdmin | null> => {
+  await connection();
+  return lookupSession((await cookies()).get(SESSION_COOKIE)?.value);
+});
 
 export async function isAdmin() {
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  return verifySessionToken(token);
+  return Boolean(await getCurrentAdmin());
 }
 
-// Call at the top of every admin page and Server Action. Proxy only guards navigation.
+// Call at the top of every admin page, Server Action and Route Handler. Proxy only guards navigation.
 export async function requireAdmin() {
-  if (!(await isAdmin())) redirect("/admin/login");
+  const admin = await getCurrentAdmin();
+  if (!admin) redirect("/admin/login");
+  return admin;
 }
 
-export function checkPassword(input: string) {
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) throw new Error("ADMIN_PASSWORD is not set");
-  // Hash both sides so lengths match and the comparison is constant-time.
-  const a = createHash("sha256").update(input).digest();
-  const b = createHash("sha256").update(expected).digest();
-  return timingSafeEqual(a, b);
-}
+export async function startSession(adminId: string) {
+  const token = randomBytes(32).toString("base64url");
+  const h = await headers();
+  await db.insert(adminSessions).values({
+    id: hashSessionToken(token),
+    adminId,
+    userAgent: (h.get("user-agent") ?? "").slice(0, 300),
+    ip: clientIp(h),
+    expiresAt: new Date(Date.now() + SESSION_MAX_MS),
+  });
 
-export async function startSession() {
-  (await cookies()).set(SESSION_COOKIE, await signSession(), {
+  (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: SESSION_MAX_AGE,
+    maxAge: SESSION_MAX_MS / 1000,
   });
 }
 
 export async function endSession() {
-  (await cookies()).delete(SESSION_COOKIE);
+  const store = await cookies();
+  const token = store.get(SESSION_COOKIE)?.value;
+  if (token && SESSION_TOKEN_PATTERN.test(token)) {
+    await db.delete(adminSessions).where(eq(adminSessions.id, hashSessionToken(token)));
+  }
+  store.delete(SESSION_COOKIE);
+}
+
+// Vercel sets x-real-ip / x-forwarded-for to the visitor's address.
+export function clientIp(h: Headers) {
+  return (h.get("x-real-ip") ?? h.get("x-forwarded-for")?.split(",")[0] ?? "").trim().slice(0, 64);
 }
