@@ -34,8 +34,11 @@ export function Portfolio({ portfolio }: { portfolio: PublicPortfolio }) {
       </div>
 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-background/70 backdrop-blur-md">
-        <nav className="mx-auto flex h-16 w-full max-w-5xl items-center justify-end px-6">
-          <div className="flex items-center gap-6 text-sm">
+        <nav className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-6 px-6">
+          <a href="#" className="truncate font-medium tracking-tight">
+            {profile.name}
+          </a>
+          <div className="flex shrink-0 items-center gap-6 text-sm">
             {navLinks.map((link) => (
               <a key={link.href} href={link.href} className="text-muted transition hover:text-foreground">
                 {link.label}
