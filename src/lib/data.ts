@@ -3,22 +3,22 @@ import { cache } from "react";
 import { and, asc, count, desc, eq, gt } from "drizzle-orm";
 import { db } from "@/db";
 import { admins, adminSessions, developers, projects } from "@/db/schema";
-import { ACCESS_TOKEN_PATTERN } from "./tokens";
+import { PUBLIC_KEY_PATTERN } from "./links";
 import { requireAdmin } from "./auth";
 import { SESSION_IDLE_MS } from "./session";
 import { isUuid } from "./forms";
 
 const projectOrder = [asc(projects.sortOrder), desc(projects.createdAt)];
 
-// Public: the only way a client can reach a developer is by their exact token.
+// Public: the only way a client can reach a developer is by the exact random key in their link.
 // Wrapped in cache() so generateMetadata and the page share one query per request.
-export const getPublicPortfolio = cache(async (token: string) => {
-  if (!ACCESS_TOKEN_PATTERN.test(token)) return null;
+export const getPublicPortfolio = cache(async (key: string) => {
+  if (!PUBLIC_KEY_PATTERN.test(key)) return null;
 
   const [developer] = await db
     .select()
     .from(developers)
-    .where(and(eq(developers.accessToken, token), eq(developers.isPublished, true)))
+    .where(and(eq(developers.publicKey, key), eq(developers.isPublished, true)))
     .limit(1);
   if (!developer) return null;
 
@@ -29,7 +29,7 @@ export const getPublicPortfolio = cache(async (token: string) => {
     .orderBy(...projectOrder);
 
   // Strip admin-only fields before anything reaches the page.
-  const { accessToken, internalLabel, ...profile } = developer;
+  const { accessToken, publicKey, slug, internalLabel, ...profile } = developer;
   return { profile, projects: items };
 });
 
@@ -45,7 +45,8 @@ export async function listDevelopers() {
       name: developers.name,
       role: developers.role,
       internalLabel: developers.internalLabel,
-      accessToken: developers.accessToken,
+      slug: developers.slug,
+      publicKey: developers.publicKey,
       isPublished: developers.isPublished,
       updatedAt: developers.updatedAt,
       projectCount: count(projects.id),

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import type { DeveloperValues } from "@/lib/defaults";
 import { formatFacts, type FormState } from "@/lib/forms";
 import { ContactLinksField } from "./ContactLinksField";
+import { LinkNameField } from "./LinkNameField";
 import { Field, FormMessage, SubmitButton, useFormSubmit } from "./ui";
 import { inputClass } from "./styles";
 
@@ -11,10 +12,13 @@ export function DeveloperForm({
   action,
   values,
   submitLabel,
+  publicKey,
 }: {
   action: (state: FormState, form: FormData) => Promise<FormState>;
   values: DeveloperValues;
   submitLabel: string;
+  // Random part of the current link, for the preview; unknown until the developer is created.
+  publicKey?: string;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
   const onSubmit = useFormSubmit(formAction);
@@ -33,6 +37,7 @@ export function DeveloperForm({
             <input name="role" defaultValue={values.role} placeholder="UX/UI Designer" className={inputClass} />
           </Field>
         </div>
+        <LinkNameField initial={values.slug} name={values.name} publicKey={publicKey} />
         <Field label="Email" hint="Used by the “Get in touch” and contact buttons.">
           <input name="email" type="email" defaultValue={values.email} className={inputClass} />
         </Field>

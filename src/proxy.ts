@@ -1,16 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { isLiveToken } from "@/lib/live-token";
+import { resolvePublicLink } from "@/lib/public-link";
 import { SESSION_COOKIE } from "@/lib/session";
 import { lookupSession } from "@/lib/session-store";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Public pages: unknown links get the 404 page with a real 404 status.
-  // "/" always renders notFound(), so rewriting there serves the same page.
-  if (pathname.startsWith("/p/")) {
-    const token = pathname.slice("/p/".length);
-    if (!(await isLiveToken(token))) return NextResponse.rewrite(new URL("/", request.url));
+  // Public pages. Unknown links get the 404 page with a real 404 status ("/" always renders
+  // notFound(), so rewriting there serves the same page); old /p/<token> links and outdated
+  // slugs are permanently redirected to the current /portfolio/<slug>-<key>.
+  if (pathname.startsWith("/portfolio/") || pathname.startsWith("/p/")) {
+    const link = await resolvePublicLink(pathname);
+    if (link.kind === "not-found") return NextResponse.rewrite(new URL("/", request.url));
+    if (link.kind === "redirect") return NextResponse.redirect(new URL(link.to, request.url), 308);
     return NextResponse.next();
   }
 
@@ -26,5 +28,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/p/:token", "/admin", "/admin/:path*"],
+  matcher: ["/portfolio/:id", "/p/:token", "/admin", "/admin/:path*"],
 };

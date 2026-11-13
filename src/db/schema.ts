@@ -16,7 +16,11 @@ export type ContactLink = { label: string; url: string };
 
 export const developers = pgTable("developers", {
   id: uuid("id").primaryKey().defaultRandom(),
-  // Secret part of the public URL: /p/<accessToken>
+  // Public URL: /portfolio/<slug>-<publicKey> (see lib/links.ts). The slug is readable decoration;
+  // the random key is what makes the link private.
+  slug: text("slug").notNull().default(""),
+  publicKey: text("public_key").notNull().unique(),
+  // Legacy secret from the old /p/<accessToken> links; still accepted and redirected.
   accessToken: text("access_token").notNull().unique(),
   isPublished: boolean("is_published").notNull().default(false),
   // Only shown in the admin panel

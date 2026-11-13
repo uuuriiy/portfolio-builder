@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { slugify } from "./links";
 import type { ContactLink, Fact } from "@/db/schema";
 
 export const isUuid = (value: string) => z.uuid().safeParse(value).success;
@@ -82,6 +83,7 @@ const field = (form: FormData, name: string) => {
 export const developerSchema = z.object({
   internalLabel: text(),
   name: z.string().trim().min(1, "Name is required").max(120),
+  slug: z.string().max(60),
   role: text(),
   heroBadge: text(),
   heroTitleBefore: text(),
@@ -104,6 +106,8 @@ export function parseDeveloperForm(form: FormData) {
   return developerSchema.safeParse({
     internalLabel: field(form, "internalLabel"),
     name: field(form, "name"),
+    // Readable part of the link; falls back to the name when left empty.
+    slug: slugify(field(form, "slug")) || slugify(field(form, "name")),
     role: field(form, "role"),
     heroBadge: field(form, "heroBadge"),
     heroTitleBefore: field(form, "heroTitleBefore"),

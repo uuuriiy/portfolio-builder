@@ -1,11 +1,12 @@
 # Portfolio Builder
 
 Private portfolio pages for several developers, managed from one admin panel.
-Each developer gets an unguessable link (`/p/<token>`); clients only ever see the page whose link they were sent.
+Each portfolio gets a private link like `/portfolio/oleh-sypko-x7Kq9f2a`; clients only ever see the page whose link they were sent.
 
-- **Public page** `/p/<token>`: hero, projects (with gallery modal), about, contact. Rendered per request, `noindex`.
+- **Public page** `/portfolio/<link-name>-<key>`: hero, projects (with gallery modal), about, contact. Rendered per request, `noindex`.
 - **Admin** `/admin`: sign in with Google (only approved emails), create developers, edit every text on their page, manage projects and images, publish/hide, copy link, issue a new link (the old one stops working immediately).
-- `/`, unknown tokens, hidden pages and revoked links all return 404. `robots.txt` disallows everything.
+- `/`, unknown links, hidden pages and revoked links all return 404. `robots.txt` disallows everything.
+- Old `/p/<token>` links and outdated link names permanently redirect to the current URL.
 
 Stack: Next.js 16 (App Router, Server Actions, Cache Components), Tailwind 4, Drizzle ORM + Postgres, Vercel Blob for images.
 
@@ -58,8 +59,9 @@ Edit `src/db/schema.ts`, then `npm run db:generate` (writes SQL to `drizzle/`) a
 
 ## How privacy works
 
-- Links are 24 random URL-safe characters (144 bits), see `src/lib/tokens.ts`.
-- `src/proxy.ts` checks the token before the page renders, so wrong/hidden/revoked links get a real 404.
+- A link is `/portfolio/<link-name>-<key>` (`src/lib/links.ts`). The link name is readable decoration, editable per portfolio and defaulting to the developer's name (Cyrillic is transliterated). The page is looked up by the **key** alone: 8 random base62 characters (~47.6 bits, `generatePublicKey` in `src/lib/tokens.ts`), so knowing someone's name doesn't let you guess their link, and renaming never breaks links already sent.
+- **New link** issues a new key; the old link (and any legacy `/p/<token>` link) stops working immediately.
+- `src/proxy.ts` resolves the link before the page renders (`src/lib/public-link.ts`): wrong/hidden/revoked links get a real 404, and outdated link names or legacy `/p/<token>` links a 308 redirect to the current URL.
 - The public query returns only that developer's profile and projects; admin-only fields (token, internal label) are stripped (`src/lib/data.ts`).
 - Every admin page, Server Action and Route Handler re-checks the session (`requireAdmin`), not just the proxy.
 

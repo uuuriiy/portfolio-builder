@@ -8,7 +8,7 @@ import { db } from "@/db";
 import { admins, adminSessions, developers, projects } from "@/db/schema";
 import { endSession, requireAdmin } from "@/lib/auth";
 import { adminEmailSchema, firstError, isUuid, parseDeveloperForm, parseProjectForm, type FormState } from "@/lib/forms";
-import { generateAccessToken } from "@/lib/tokens";
+import { generateAccessToken, generatePublicKey } from "@/lib/tokens";
 
 // Every action below re-checks the session: Server Actions are public endpoints.
 
@@ -76,7 +76,7 @@ export async function createDeveloper(_prev: FormState, form: FormData): Promise
 
   const [created] = await db
     .insert(developers)
-    .values({ ...parsed.data, accessToken: generateAccessToken() })
+    .values({ ...parsed.data, publicKey: generatePublicKey(), accessToken: generateAccessToken() })
     .returning({ id: developers.id });
   redirect(`/admin/developers/${created.id}`);
 }
@@ -102,13 +102,13 @@ export async function setPublished(id: string, isPublished: boolean) {
   refresh();
 }
 
-// Issues a new link. The old one stops working immediately.
+// Issues a new link. The old one (and any legacy /p/ link) stops working immediately.
 export async function regenerateLink(id: string) {
   await requireAdmin();
   if (!isUuid(id)) return;
   await db
     .update(developers)
-    .set({ accessToken: generateAccessToken(), updatedAt: new Date() })
+    .set({ publicKey: generatePublicKey(), accessToken: generateAccessToken(), updatedAt: new Date() })
     .where(eq(developers.id, id));
   refresh();
 }

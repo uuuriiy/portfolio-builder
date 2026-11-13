@@ -4,6 +4,7 @@ import { CopyLinkButton } from "@/components/admin/CopyLinkButton";
 import { ConfirmButton, PendingButton } from "@/components/admin/ui";
 import { buttonClass, secondaryButtonClass } from "@/components/admin/styles";
 import { listDevelopers } from "@/lib/data";
+import { portfolioPath } from "@/lib/links";
 
 export const instant = false;
 
@@ -29,7 +30,7 @@ export default async function AdminHome() {
       ) : (
         <ul className="mt-10 space-y-3">
           {developers.map((dev) => {
-            const path = `/p/${dev.accessToken}`;
+            const path = portfolioPath(dev);
             return (
               <li
                 key={dev.id}

@@ -1,6 +1,9 @@
 import type { Developer, Project } from "@/db/schema";
 
-export type DeveloperValues = Omit<Developer, "id" | "accessToken" | "isPublished" | "createdAt" | "updatedAt">;
+export type DeveloperValues = Omit<
+  Developer,
+  "id" | "accessToken" | "publicKey" | "isPublished" | "createdAt" | "updatedAt"
+>;
 export type ProjectValues = Pick<
   Project,
   "title" | "description" | "year" | "link" | "image" | "gallery" | "tags" | "featured"
@@ -10,6 +13,7 @@ export type ProjectValues = Pick<
 export const emptyDeveloper: DeveloperValues = {
   internalLabel: "",
   name: "",
+  slug: "",
   role: "",
   heroBadge: "",
   heroTitleBefore: "",

@@ -12,6 +12,7 @@ import { CopyLinkButton } from "@/components/admin/CopyLinkButton";
 import { DeveloperForm } from "@/components/admin/DeveloperForm";
 import { ConfirmButton, PendingButton } from "@/components/admin/ui";
 import { buttonClass, secondaryButtonClass } from "@/components/admin/styles";
+import { portfolioPath } from "@/lib/links";
 import { getDeveloper, getDeveloperProjects } from "@/lib/data";
 
 export const instant = false;
@@ -21,7 +22,7 @@ export default async function DeveloperPage({ params }: PageProps<"/admin/develo
   const developer = await getDeveloper(id);
   if (!developer) notFound();
   const projects = await getDeveloperProjects(id);
-  const path = `/p/${developer.accessToken}`;
+  const path = portfolioPath(developer);
 
   return (
     <>
@@ -122,6 +123,7 @@ export default async function DeveloperPage({ params }: PageProps<"/admin/develo
           action={updateDeveloper.bind(null, developer.id)}
           values={developer}
           submitLabel="Save profile"
+          publicKey={developer.publicKey}
         />
       </section>
 

@@ -3,15 +3,17 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Portfolio } from "@/components/portfolio/Portfolio";
 import { getPublicPortfolio } from "@/lib/data";
+import { parsePortfolioId } from "@/lib/links";
 
-// Always rendered per request (connection()) so hiding a page or issuing a new link
-// takes effect immediately. proxy.ts turns unknown tokens into a real 404 first.
+// /portfolio/<slug>-<key>. Always rendered per request (connection()) so hiding a page or
+// issuing a new link takes effect immediately. proxy.ts turns unknown links into a real 404
+// and redirects old /p/<token> links and outdated slugs first.
 export const instant = false;
 
-export async function generateMetadata({ params }: PageProps<"/p/[token]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/portfolio/[id]">): Promise<Metadata> {
   await connection();
-  const { token } = await params;
-  const portfolio = await getPublicPortfolio(token);
+  const { id } = await params;
+  const portfolio = await getPublicPortfolio(parsePortfolioId(id)?.key ?? "");
   if (!portfolio) return { title: "Not found" };
 
   const { profile, projects } = portfolio;
@@ -28,10 +30,10 @@ export async function generateMetadata({ params }: PageProps<"/p/[token]">): Pro
   };
 }
 
-export default async function PortfolioPage({ params }: PageProps<"/p/[token]">) {
+export default async function PortfolioPage({ params }: PageProps<"/portfolio/[id]">) {
   await connection();
-  const { token } = await params;
-  const portfolio = await getPublicPortfolio(token);
+  const { id } = await params;
+  const portfolio = await getPublicPortfolio(parsePortfolioId(id)?.key ?? "");
   if (!portfolio) notFound();
 
   return <Portfolio portfolio={portfolio} />;

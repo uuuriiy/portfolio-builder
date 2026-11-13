@@ -4,7 +4,8 @@ import { readFileSync } from "node:fs";
 import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { developers, projects } from "../src/db/schema";
-import { generateAccessToken } from "../src/lib/tokens";
+import { portfolioPath, slugify } from "../src/lib/links";
+import { generateAccessToken, generatePublicKey } from "../src/lib/tokens";
 
 type SeedProject = {
   title: string;
@@ -22,7 +23,7 @@ const NAME = "Oleh Sypko";
 async function main() {
   const [existing] = await db.select().from(developers).where(eq(developers.name, NAME));
   if (existing) {
-    console.log(`${NAME} already exists: /p/${existing.accessToken}`);
+    console.log(`${NAME} already exists: ${portfolioPath(existing)}`);
     process.exit(0);
   }
 
@@ -30,6 +31,8 @@ async function main() {
     .insert(developers)
     .values({
       accessToken: generateAccessToken(),
+      publicKey: generatePublicKey(),
+      slug: slugify(NAME),
       isPublished: true,
       internalLabel: "Original portfolio",
       name: NAME,
@@ -75,7 +78,7 @@ async function main() {
     })),
   );
 
-  console.log(`Created ${NAME} with ${items.length} projects: /p/${developer.accessToken}`);
+  console.log(`Created ${NAME} with ${items.length} projects: ${portfolioPath(developer)}`);
   process.exit(0);
 }
 
